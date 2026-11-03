@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.env
+data/database/*.db
+data/imports/*
+!data/imports/.gitkeep
+data/output/*
+!data/output/.gitkeep
