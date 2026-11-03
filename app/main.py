@@ -183,3 +183,64 @@ def export_txt():
 
 @app.get("/exports/result.json")
 def export_json(): return JSONResponse(export_rows())
+
+from fastapi.responses import HTMLResponse
+
+@app.get("/ui", response_class=HTMLResponse)
+def operations_ui():
+    return HTMLResponse((Path(__file__).with_name("ui.html")).read_text("utf-8"))
+
+@app.get("/api/overview")
+def overview():
+    with connect() as c:
+        totals = c.execute("""SELECT COUNT(*) total,
+            SUM(CASE WHEN status='online' THEN 1 ELSE 0 END) online,
+            SUM(CASE WHEN status='offline' THEN 1 ELSE 0 END) offline,
+            SUM(CASE WHEN status!='pending' THEN 1 ELSE 0 END) checked,
+            AVG(CASE WHEN status='online' THEN latency_ms END) avg_latency,
+            SUM(CASE WHEN channel_id IS NULL THEN 1 ELSE 0 END) unmatched
+            FROM candidates""").fetchone()
+        channels = [dict(r) for r in c.execute("""SELECT ch.id,ch.name,ch.group_name,
+            COUNT(ca.id) candidate_count,
+            SUM(CASE WHEN ca.status='online' THEN 1 ELSE 0 END) online_count,
+            SUM(CASE WHEN ca.status='offline' THEN 1 ELSE 0 END) offline_count,
+            SUM(CASE WHEN ca.status='pending' THEN 1 ELSE 0 END) pending_count,
+            MAX(ca.height) best_height,
+            MIN(CASE WHEN ca.status='online' THEN ca.latency_ms END) best_latency
+            FROM channels ch LEFT JOIN candidates ca ON ca.channel_id=ch.id
+            GROUP BY ch.id ORDER BY ch.group_name,ch.name""")]
+        sources = [dict(r) for r in c.execute("""SELECT s.id,s.name,s.source_type,s.source_url,
+            COUNT(ca.id) candidates,
+            SUM(CASE WHEN ca.status='online' THEN 1 ELSE 0 END) online
+            FROM sources s LEFT JOIN candidates ca ON ca.source_id=s.id
+            GROUP BY s.id ORDER BY s.id DESC""")]
+        groups = [dict(r) for r in c.execute("""SELECT group_name name,COUNT(*) total,
+            SUM(CASE WHEN candidate_count>0 THEN 1 ELSE 0 END) covered FROM
+            (SELECT ch.id,ch.group_name,COUNT(ca.id) candidate_count FROM channels ch
+             LEFT JOIN candidates ca ON ca.channel_id=ch.id GROUP BY ch.id)
+            GROUP BY group_name ORDER BY group_name""")]
+        top = c.execute("""SELECT COALESCE(ch.name,ca.name_raw) name,COUNT(*) count
+            FROM candidates ca LEFT JOIN channels ch ON ch.id=ca.channel_id
+            GROUP BY ca.channel_id,ca.name_raw ORDER BY count DESC LIMIT 1""").fetchone()
+        channel_count = c.execute("SELECT COUNT(*) FROM channels").fetchone()[0]
+        covered = sum(1 for x in channels if x["candidate_count"])
+    return {"total_candidates":totals["total"] or 0,"online":totals["online"] or 0,
+        "offline":totals["offline"] or 0,"unmatched":totals["unmatched"] or 0,
+        "has_checks":bool(totals["checked"]),"avg_latency":totals["avg_latency"],
+        "total_channels":channel_count,"covered_channels":covered,
+        "channels":channels,"sources":sources,"groups":groups,
+        "top_channel":dict(top) if top else None}
+
+@app.delete("/api/sources/{source_id}")
+def delete_source(source_id:int,x_admin_token:str|None=Header(default=None)):
+    auth(x_admin_token)
+    with connect() as c:
+        row=c.execute("SELECT id FROM sources WHERE id=?",(source_id,)).fetchone()
+        if not row: raise HTTPException(404,"源不存在")
+        ids=[r["id"] for r in c.execute("SELECT id FROM candidates WHERE source_id=?",(source_id,))]
+        if ids:
+            marks=",".join("?" for _ in ids)
+            c.execute(f"DELETE FROM checks WHERE candidate_id IN ({marks})",ids)
+            c.execute(f"DELETE FROM candidates WHERE id IN ({marks})",ids)
+        c.execute("DELETE FROM sources WHERE id=?",(source_id,))
+    return {"deleted":source_id,"candidates":len(ids)}

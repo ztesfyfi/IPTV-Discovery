@@ -13,6 +13,4 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install -r requirements.txt pytest
-      - run: |
-          python -m zipfile -e source.zip .
-          PYTHONPATH=. pytest -q
+      - run: PYTHONPATH=. pytest -q

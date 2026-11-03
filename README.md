@@ -13,7 +13,7 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-访问 `http://NAS_IP:18787/docs`，健康检查 `http://NAS_IP:18787/health`。宿主机和容器内部端口均使用高位端口 **18787**。
+访问运维面板 `http://NAS_IP:18787/ui`，API 文档 `http://NAS_IP:18787/docs`，健康检查 `http://NAS_IP:18787/health`。宿主机和容器内部端口均使用高位端口 **18787**。
 
 ## 功能
 
