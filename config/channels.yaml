@@ -1,0 +1,31 @@
+channels:
+  - {id: cctv-1, name: "CCTV-1 综合", group: "央视", aliases: ["CCTV1", "CCTV-1", "中央一套"]}
+  - {id: cctv-2, name: "CCTV-2 财经", group: "央视", aliases: ["CCTV2", "CCTV-2", "中央二套"]}
+  - {id: cctv-3, name: "CCTV-3 综艺", group: "央视", aliases: ["CCTV3", "CCTV-3"]}
+  - {id: cctv-4, name: "CCTV-4 中文国际", group: "央视", aliases: ["CCTV4", "CCTV-4"]}
+  - {id: cctv-5, name: "CCTV-5 体育", group: "央视", aliases: ["CCTV5", "CCTV-5"]}
+  - {id: cctv-5plus, name: "CCTV-5+ 体育赛事", group: "央视", aliases: ["CCTV5+", "CCTV-5+"]}
+  - {id: cctv-6, name: "CCTV-6 电影", group: "央视", aliases: ["CCTV6", "CCTV-6"]}
+  - {id: cctv-7, name: "CCTV-7 国防军事", group: "央视", aliases: ["CCTV7", "CCTV-7"]}
+  - {id: cctv-8, name: "CCTV-8 电视剧", group: "央视", aliases: ["CCTV8", "CCTV-8"]}
+  - {id: cctv-9, name: "CCTV-9 纪录", group: "央视", aliases: ["CCTV9", "CCTV-9"]}
+  - {id: cctv-10, name: "CCTV-10 科教", group: "央视", aliases: ["CCTV10", "CCTV-10"]}
+  - {id: cctv-11, name: "CCTV-11 戏曲", group: "央视", aliases: ["CCTV11", "CCTV-11"]}
+  - {id: cctv-12, name: "CCTV-12 社会与法", group: "央视", aliases: ["CCTV12", "CCTV-12"]}
+  - {id: cctv-13, name: "CCTV-13 新闻", group: "央视", aliases: ["CCTV13", "CCTV-13"]}
+  - {id: cctv-14, name: "CCTV-14 少儿", group: "央视", aliases: ["CCTV14", "CCTV-14"]}
+  - {id: cctv-15, name: "CCTV-15 音乐", group: "央视", aliases: ["CCTV15", "CCTV-15"]}
+  - {id: cctv-16, name: "CCTV-16 奥林匹克", group: "央视", aliases: ["CCTV16", "CCTV-16"]}
+  - {id: cctv-17, name: "CCTV-17 农业农村", group: "央视", aliases: ["CCTV17", "CCTV-17"]}
+  - {id: satellite-hunan, name: "湖南卫视", group: "卫视", aliases: ["湖南", "湖南台", "HUNAN TV"]}
+  - {id: satellite-zhejiang, name: "浙江卫视", group: "卫视", aliases: ["浙江", "浙江台"]}
+  - {id: satellite-jiangsu, name: "江苏卫视", group: "卫视", aliases: ["江苏", "江苏台"]}
+  - {id: satellite-dongfang, name: "东方卫视", group: "卫视", aliases: ["上海卫视", "东方", "DRAGON TV"]}
+  - {id: satellite-beijing, name: "北京卫视", group: "卫视", aliases: ["北京", "北京台", "BTV"]}
+  - {id: satellite-guangdong, name: "广东卫视", group: "卫视", aliases: ["广东", "广东台"]}
+  - {id: satellite-shenzhen, name: "深圳卫视", group: "卫视", aliases: ["深圳", "深圳台"]}
+  - {id: satellite-anhui, name: "安徽卫视", group: "卫视", aliases: ["安徽", "安徽台"]}
+  - {id: satellite-shandong, name: "山东卫视", group: "卫视", aliases: ["山东", "山东台"]}
+  - {id: satellite-tianjin, name: "天津卫视", group: "卫视", aliases: ["天津", "天津台"]}
+  - {id: satellite-chongqing, name: "重庆卫视", group: "卫视", aliases: ["重庆", "重庆台"]}
+  - {id: satellite-sichuan, name: "四川卫视", group: "卫视", aliases: ["四川", "四川台"]}

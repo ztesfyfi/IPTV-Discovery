@@ -1,0 +1,11 @@
+probe:
+  connect_timeout_seconds: 5
+  read_timeout_seconds: 8
+  deep_probe_seconds: 8
+  max_redirects: 3
+  user_agent: "IPTV-Discovery/0.1"
+quality:
+  preferred_height: 1080
+  minimum_height: 360
+  deep_probe_top_n: 30
+  deep_probe_concurrency: 1
