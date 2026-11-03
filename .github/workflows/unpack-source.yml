@@ -1,0 +1,39 @@
+name: Unpack project source
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - source.zip
+      - .github/workflows/unpack-source.yml
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Expand source archive
+        run: |
+          set -euo pipefail
+          unzip -t source.zip
+          unzip -oq source.zip -d .
+          test -f app/main.py
+          test -f app/db.py
+          git status --short
+      - name: Commit expanded source
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app config tests
+          if git diff --cached --quiet; then
+            echo "No source changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: expand source archive for maintainable development"
+          git push origin HEAD:main
