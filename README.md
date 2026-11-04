@@ -15,6 +15,61 @@ docker compose up -d --build
 
 访问运维面板 `http://NAS_IP:18787/ui`，API 文档 `http://NAS_IP:18787/docs`，健康检查 `http://NAS_IP:18787/health`。宿主机和容器内部端口均使用高位端口 **18787**。
 
+## Docker Compose 部署
+
+仓库根目录已提供 `docker-compose.yml`，默认使用本地 Dockerfile 构建镜像，适合 NAS 首次部署或需要从当前源码构建的场景。Compose 会自动创建并挂载宿主机 `./data` 目录，数据库、导入文件和导出文件会保留在该目录。
+
+### 启动
+
+```bash
+git clone https://github.com/ztesfyfi/IPTV-Discovery.git
+cd IPTV-Discovery
+cp .env.example .env
+```
+
+编辑 `.env`，至少设置一个强随机的 `ADMIN_TOKEN`，然后执行：
+
+```bash
+docker compose up -d --build
+```
+
+### 常用管理命令
+
+```bash
+# 查看容器状态
+docker compose ps
+
+# 实时查看运行日志
+docker compose logs -f --tail=100
+
+# 重启服务
+docker compose restart
+
+# 拉取最新代码后重新构建并更新
+git pull
+docker compose up -d --build
+
+# 停止并删除容器（不会删除 ./data 数据目录）
+docker compose down
+```
+
+### 端口与数据配置
+
+默认通过 `18787:18787` 映射端口。若宿主机的 18787 端口已被占用，可在 `.env` 中修改 `APP_PORT`，例如 `APP_PORT=28787`；容器内部端口仍固定为 18787。
+
+可在 `.env` 中调整以下参数：
+
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `APP_PORT` | `18787` | NAS 宿主机访问端口 |
+| `ADMIN_TOKEN` | 空 | 管理 API 令牌，务必自行设置 |
+| `MAX_CONCURRENCY` | `4` | 快速检测并发数 |
+| `DEEP_CONCURRENCY` | `1` | FFprobe 深度检测并发数 |
+| `REQUEST_TIMEOUT` | `8` | HTTP 检测超时秒数 |
+| `MAX_IMPORT_BYTES` | `5242880` | 单个导入文件最大字节数 |
+
+J3160 建议先保持快速检测并发为 4、深度检测并发为 1。管理面板地址为 `http://NAS_IP:APP_PORT/ui`，API 文档为 `http://NAS_IP:APP_PORT/docs`。
+
 ## 功能
 
 - 导入本地 M3U/TXT 或远程订阅
